@@ -54,10 +54,10 @@ library(tidyverse)
 to do? Do those simple checks on the diamonds dataset below.
 
 ```{r q0-task}
-head(diamonds)
+# head(diamonds)
 # ?diamonds
 # glimpse(diamonds)
-# summary(diamonds)
+summary(diamonds)
 ```
 
 I'm going to walk you through a train of thought I had when studying the
