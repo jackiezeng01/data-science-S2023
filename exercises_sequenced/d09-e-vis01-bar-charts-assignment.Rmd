@@ -36,8 +36,10 @@ plot into the same visual using `geom_col()`.
 
 ```{r q1-task}
 mpg %>%
-  ggplot(aes(trans)) +
-  geom_bar()
+  count(trans) %>%
+  ggplot(mapping = aes(x=trans, y=n)) + 
+  geom_col()
+
 ```
 
 The reading mentioned that when using `geom_col()` our x-y data should
@@ -63,7 +65,7 @@ wrong here?
 ```{r q2-task}
 mpg %>%
   ggplot(aes(x = cty, y = hwy)) +
-  geom_col()
+  geom_col(position = "dodge")
 ```
 
 **Observations**: - Write your observations here!
@@ -107,6 +109,7 @@ mpg %>%
 
 -   Which visualization---`v1` or `v2`---enabled you to make more
     observations?
+    -   v2
 -   What was the difference between `v1` and `v2`?
 
 ### **q4** The following code has a bug; it does not do what its author intended.
@@ -119,8 +122,8 @@ how to do this in a future exercise.
 
 ```{r q4-task}
 mpg %>%
-  ggplot(aes(x = manufacturer, fill = class), position = "dodge") +
-  geom_bar() +
+  ggplot(aes(x = manufacturer, fill = class)) +
+  geom_bar(position = "dodge") +
   theme(axis.text.x = element_text(angle = 270, vjust = 0.5, hjust = 0))
 ```
 
@@ -135,7 +138,7 @@ suggested improvement.
 mpg %>%
   ggplot(aes(x = cyl)) +
   geom_bar() +
-  facet_grid(~ manufacturer)
+  facet_wrap(~ manufacturer)
 ```
 
 <!-- include-exit-ticket -->

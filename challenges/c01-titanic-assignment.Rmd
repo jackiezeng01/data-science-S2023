@@ -26,7 +26,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category    | Needs Improvement                                                                                                | Satisfactory                                                                                                               |
-|-------------------|-----------------------------|-------------------------|
+|-------------|------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
 | Effort      | Some task **q**'s left unattempted                                                                               | All task **q**'s attempted                                                                                                 |
 | Observed    | Did not document observations, or observations incorrect                                                         | Documented correct observations based on analysis                                                                          |
 | Supported   | Some observations not clearly supported by analysis                                                              | All observations clearly supported by analysis (table, graph, etc.)                                                        |
@@ -75,10 +75,15 @@ df_titanic %>% summarize(total = sum(n))
 **Observations**
 
 -   
+
     -   The number of people on board according to the Wiki is 2224. While the number reported by the data set is 2201.
+
 -   Are there any differences?
+
     -   Yes, a difference by 23
+
 -   If yes, what might account for those differences?
+
     -   The difference might be due to the uncounted stowaways and maybe unborn children among the women.
 
 ### **q3** Create a plot showing the count of persons who *did* survive, along with aesthetics for `Class` and `Sex`. Document your observations below.
