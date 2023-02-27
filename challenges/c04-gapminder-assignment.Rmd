@@ -1,7 +1,7 @@
 ---
 title: "Gapminder"
-author: "(Your name here)"
-date: 2020-
+author: "Jacqueline Zeng"
+date: 2020-2-26
 output:
   github_document:
     toc: true
@@ -12,24 +12,28 @@ prerequisites:
 *Purpose*: Learning to do EDA well takes practice! In this challenge you'll further practice EDA by first completing a guided exploration, then by conducting your own investigation. This challenge will also give you a chance to use the wide variety of visual tools we've been learning.
 
 <!-- include-rubric -->
+
 # Grading Rubric
+
 <!-- -------------------------------------------------- -->
 
 Unlike exercises, **challenges will be graded**. The following rubrics define how you will be graded, both on an individual and team basis.
 
 ## Individual
+
 <!-- ------------------------- -->
 
-| Category | Needs Improvement | Satisfactory |
-|----------|----------------|--------------|
-| Effort | Some task __q__'s left unattempted | All task __q__'s attempted |
-| Observed | Did not document observations, or observations incorrect | Documented correct observations based on analysis |
-| Supported | Some observations not clearly supported by analysis | All observations clearly supported by analysis (table, graph, etc.) |
-| Assessed | Observations include claims not supported by the data, or reflect a level of certainty not warranted by the data | Observations are appropriately qualified by the quality & relevance of the data and (in)conclusiveness of the support |
-| Specified | Uses the phrase "more data are necessary" without clarification | Any statement that "more data are necessary" specifies which *specific* data are needed to answer what *specific* question |
-| Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability | Code sufficiently close to the [style guide](https://style.tidyverse.org/) |
+| Category    | Needs Improvement                                                                                                | Satisfactory                                                                                                               |
+|--------------|----------------------------|-------------------------------|
+| Effort      | Some task **q**'s left unattempted                                                                               | All task **q**'s attempted                                                                                                 |
+| Observed    | Did not document observations, or observations incorrect                                                         | Documented correct observations based on analysis                                                                          |
+| Supported   | Some observations not clearly supported by analysis                                                              | All observations clearly supported by analysis (table, graph, etc.)                                                        |
+| Assessed    | Observations include claims not supported by the data, or reflect a level of certainty not warranted by the data | Observations are appropriately qualified by the quality & relevance of the data and (in)conclusiveness of the support      |
+| Specified   | Uses the phrase "more data are necessary" without clarification                                                  | Any statement that "more data are necessary" specifies which *specific* data are needed to answer what *specific* question |
+| Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability                                 | Code sufficiently close to the [style guide](https://style.tidyverse.org/)                                                 |
 
 ## Due Date
+
 <!-- ------------------------- -->
 
 All the deliverables stated in the rubrics above are due **at midnight** before the day of the class discussion of the challenge. See the [Syllabus](https://docs.google.com/document/d/1qeP6DUS8Djq_A0HMllMqsSqX3a9dbcx1/edit?usp=sharing&ouid=110386251748498665069&rtpof=true&sd=true) for more information.
@@ -40,36 +44,40 @@ library(gapminder)
 
 ```
 
-*Background*: [Gapminder](https://www.gapminder.org/about-gapminder/) is an
-independent organization that seeks to educate people about the state of the
-world. They seek to counteract the worldview constructed by a hype-driven media
-cycle, and promote a "fact-based worldview" by focusing on data. The dataset
-we'll study in this challenge is from Gapminder.
+*Background*: [Gapminder](https://www.gapminder.org/about-gapminder/) is an independent organization that seeks to educate people about the state of the world. They seek to counteract the worldview constructed by a hype-driven media cycle, and promote a "fact-based worldview" by focusing on data. The dataset we'll study in this challenge is from Gapminder.
 
 # Guided EDA
+
 <!-- -------------------------------------------------- -->
 
 First, we'll go through a round of *guided EDA*. Try to pay attention to the high-level process we're going through---after this guided round you'll be responsible for doing another cycle of EDA on your own!
 
-### __q0__ Perform your "first checks" on the dataset. What variables are in this
+### **q0** Perform your "first checks" on the dataset. What variables are in this
+
 dataset?
 
 ```{r q0-task}
 ## TASK: Do your "first checks" here!
+# glimpse(gapminder)
+head(gapminder)
+# summary(gapminder)
 ```
 
 **Observations**:
 
-- Write all variable names here
+-   country, continent, year, lifeExp, pop, gdpPercap
 
-### __q1__ Determine the most and least recent years in the `gapminder` dataset.
+### **q1** Determine the most and least recent years in the `gapminder` dataset.
 
 *Hint*: Use the `pull()` function to get a vector out of a tibble. (Rather than the `$` notation of base R.)
 
 ```{r q1-task}
 ## TASK: Find the largest and smallest values of `year` in `gapminder`
-year_max <- NA_real_
-year_min <- NA_real_
+year_max <- max(pull(gapminder, year))
+year_min <- min(pull(gapminder, year))
+
+print(year_max)
+print(year_min)
 ```
 
 Use the following test to check your work.
@@ -89,32 +97,64 @@ if (is_tibble(year_max)) {
 print("Nice!")
 ```
 
-### __q2__ Filter on years matching `year_min`, and make a plot of the GDP per capita against continent. Choose an appropriate `geom_` to visualize the data. What observations can you make?
+### **q2** Filter on years matching `year_min`, and make a plot of the GDP per capita against continent. Choose an appropriate `geom_` to visualize the data. What observations can you make?
 
 You may encounter difficulties in visualizing these data; if so document your challenges and attempt to produce the most informative visual you can.
 
 ```{r q2-task}
 ## TASK: Create a visual of gdpPercap vs continent
+
+# Attempt 1: I tried making a boxplot but the outliers are too big and prevent the graph from being readable
+df_q2 <- gapminder %>% 
+  filter(year == year_min) %>% 
+  group_by(continent)
+
+df_q2 %>%
+  ggplot(aes(x = continent, y = gdpPercap)) +
+  geom_boxplot() +
+  labs(title = "Continent vs GDP per Capital for 1952", x = "Continent", y = "GDP per Capita")
+
+# Attempt 2: Remove the outliers and replot the boxplot
+
+# Find outliers
+out <- boxplot.stats(df_q2$gdpPercap)$out
+out_ind <- which(df_q2$gdpPercap %in% c(out))
+print(df_q2[out_ind, ])
+
+# Create dataset with outliers removed
+df_q2_without_outliers <- df_q2[-c(out_ind), ] 
+
+# Boxplot without outliers
+df_q2_without_outliers %>% 
+  ggplot(aes(x = continent, y = gdpPercap)) +
+  geom_boxplot() +
+  labs(title = "Continent vs GDP per Capita for 1952 (outliers removed)", x = "Continent", y = "GDP per Capita")
 ```
 
 **Observations**:
 
-- Write your observations here
+-   Europe has the widest spread of GDP per capita of the 4 continents for the year 1952
+-   Oceania's continent category was removed after filtering out outliers
+-   Africa and Asia have similar GDP medians, but Asia's upper quartiles are higher. America's median GDP is higher than Africa and Asia but less than Europe's
 
 **Difficulties & Approaches**:
 
-- Write your challenges and your approach to solving them
+-   I first filtered the dataset to match the min_year value and grouped the countries by continents. I then plotted a boxplot based on this data. The resulting boxplot (first output in the above code section) was difficult to understand as the outliers were extremely high and squashed the boxplots into a thin sliver at the bottom of the plot. This was not very readable.
+-   I addressed this by identifying the outliers, removing them from the dataset, and replotting a boxplot.
 
-### __q3__ You should have found *at least* three outliers in q2 (but possibly many more!). Identify those outliers (figure out which countries they are).
+### **q3** You should have found *at least* three outliers in q2 (but possibly many more!). Identify those outliers (figure out which countries they are).
 
 ```{r q3-task}
 ## TASK: Identify the outliers from q2
+out <- boxplot.stats(df_q2$gdpPercap)$out
+out_ind <- which(df_q2$gdpPercap %in% c(out))
+print(df_q2[out_ind, ])
 ```
 
 **Observations**:
 
-- Identify the outlier countries from q2
-  - (Your response here)
+-   Identify the outlier countries from q2
+    -   Australia, Bahrain, Canada, Denmark, Kuwait, Netherlands, New Zealand, Norway, Switzerland, United Kingdom
 
 *Hint*: For the next task, it's helpful to know a ggplot trick we'll learn in an upcoming exercise: You can use the `data` argument inside any `geom_*` to modify the data that will be plotted *by that geom only*. For instance, you can use this trick to filter a set of points to label:
 
@@ -132,39 +172,114 @@ gapminder %>%
   )
 ```
 
-### __q4__ Create a plot similar to yours from q2 studying both `year_min` and `year_max`. Find a way to highlight the outliers from q3 on your plot *in a way that lets you identify which country is which*. Compare the patterns between `year_min` and `year_max`.
+### **q4** Create a plot similar to yours from q2 studying both `year_min` and `year_max`. Find a way to highlight the outliers from q3 on your plot *in a way that lets you identify which country is which*. Compare the patterns between `year_min` and `year_max`.
 
 *Hint*: We've learned a lot of different ways to show multiple variables; think about using different aesthetics or facets.
 
 ```{r q4-task}
 ## TASK: Create a visual of gdpPercap vs continent
+df_q4 <- gapminder %>% 
+  filter(year == c(year_min,year_max)) %>% 
+  group_by(continent)
+
+# Get outliers
+out <- boxplot.stats(df_q4$gdpPercap)$out
+out_ind <- which(df_q4$gdpPercap %in% c(out))
+print(df_q4[out_ind, ])
+
+# Plot both graphs on same plot
+df_q4 %>%
+  ggplot(aes(x = continent, y = gdpPercap)) +
+  geom_boxplot() +
+  labs(title = "Continent vs GDP per Capita for 1952", x = "Continent", y = "GDP per Capita") + facet_grid(cols = vars(year)) +
+  geom_point(
+    data = . %>% filter(country %in% c("Australia", "Bahrain", "Canada", "Denmark", "Kuwait", "Netherlands", "New Zealand", "Norway", "Switzerland", "United Kingdom")),
+    mapping = aes(color = country),
+    size = 2
+  )
+df_q4
+
 ```
 
 **Observations**:
 
-- Write your observations here
+-   Africa's median GDP is around the same for 1952 and 2007, but the it's outliers are higher
+-   Asia, Europe, America, and Oceania all experienced some degree of median GDP rises and widening of the range of GDPs.
+-   The upper outliers for 2007 are on average more extreme
 
 # Your Own EDA
+
 <!-- -------------------------------------------------- -->
 
 Now it's your turn! We just went through guided EDA considering the GDP per capita at two time points. You can continue looking at outliers, consider different years, repeat the exercise with `lifeExp`, consider the relationship between variables, or something else entirely.
 
-### __q5__ Create *at least* three new figures below. With each figure, try to pose new questions about the data.
+### **q5** Create *at least* three new figures below. With each figure, try to pose new questions about the data.
 
 ```{r q5-task1}
 ## TASK: Your first graph
+# GOAL: What is the life expectancy trend from the first year recorded to the latest year recorded?
+
+# Get outliers
+out <- boxplot.stats(df_q4$lifeExp)$out
+out_ind <- which(df_q4$lifeExp %in% c(out))
+print(df_q4[out_ind, ])
+
+# Plot both graphs on same plot
+df_q4 %>%
+  ggplot(aes(x = continent, y = lifeExp)) +
+  geom_boxplot() +
+  labs(title = "Life Expectancy by Continent", x = "Continent", y = "Life Expectancy (Years)") + facet_grid(cols = vars(year))
+
 ```
 
-- (Your notes and observations here)
+-   The median life expectancy for all continents rose throughout the years
+-   Asia's rise in life expectancy is the biggest - the median rose from around 45 years to 73 years old
+-   Africa's whiskers grew longer while all the other continent's whiskers shrunk
 
 ```{r q5-task2}
 ## TASK: Your second graph
+# GOAL: Trend with the population
+# Get outliers
+out <- boxplot.stats(df_q4$pop)$out
+out_ind <- which(df_q4$pop %in% c(out))
+print(df_q4[out_ind, ])
+
+# Plot both graphs on same plot
+df_q4 %>%
+  ggplot(aes(x = continent, y = pop)) +
+  geom_boxplot() +
+  labs(title = "Population by Continent", x = "Continent", y = "Population") + facet_grid(cols = vars(year))
+
 ```
 
-- (Your notes and observations here)
+-   Asia has the biggest outliers in terms of population
+-   Asian has the biggest spread of population
+-   Europe and Oceania didn't have significant changes
+-   Africa and America's spread and outliers did not change was significantly as Asia, but the outliers got bigger, and the spread also increased.
 
 ```{r q5-task3}
 ## TASK: Your third graph
+# GOAL: deep dive into Asia's population
+
+df_asia <- df_q4 %>% 
+  filter(continent == "Asia")
+
+# Get outliers
+out <- boxplot.stats(df_asia$pop)$out
+out_ind <- which(df_asia$pop %in% c(out))
+print(df_asia[out_ind, ])
+
+df_asia %>%
+  ggplot(aes(x = continent, y = pop)) +
+  geom_boxplot() +
+  labs(title = "Asia Population", x = "Year", y = "Population") + facet_grid(cols = vars(year)) +
+  geom_point(
+    data = . %>% filter(country %in% c("Bangladesh", "China", "India", "Indonesia", "Japan", "Pakistan")),
+    mapping = aes(color = country),
+    size = 2
+  )
+
 ```
 
-- (Your notes and observations here)
+-   In a deeper dive into Asia's population trend from the first year to the last year of the dataset
+-   China is the most populous, with India behind it. These are the two biggest outliers
