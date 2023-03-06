@@ -154,7 +154,24 @@ positive or negative.
 
 ``` r
 # WRITE YOUR CODE HERE
+df_formatted <- df_antibiotics %>% 
+  pivot_longer(
+    names_to = "antibiotic",
+    values_to = "MIC",
+    c(`penicillin`, `streptomycin`, `neomycin`)
+  ) 
+
+df_formatted %>%
+  group_by(gram) %>%
+  ggplot(aes(bacteria, MIC, color=antibiotic)) + 
+    geom_point() + 
+    scale_y_log10() +
+    geom_hline(yintercept = 0.1) +
+    facet_wrap(~gram) + 
+    coord_flip()
 ```
+
+![](c05-antibiotics-assignment_files/figure-gfm/q1.1-1.png)<!-- -->
 
 #### Visual 2 (All variables)
 
@@ -167,7 +184,15 @@ your other visuals.
 
 ``` r
 # WRITE YOUR CODE HERE
+df_formatted %>%
+  ggplot(aes(x = MIC, y = bacteria, fill = gram)) + 
+    geom_col(position = "stack") + 
+    scale_x_log10() +
+    geom_vline(xintercept = 0.1) +
+    facet_wrap(~antibiotic)
 ```
+
+![](c05-antibiotics-assignment_files/figure-gfm/q1.2-1.png)<!-- -->
 
 #### Visual 3 (Some variables)
 
@@ -180,7 +205,17 @@ your other visuals.
 
 ``` r
 # WRITE YOUR CODE HERE
+p <- df_formatted %>%
+    filter(antibiotic == 'penicillin') %>%
+    ggplot(aes(x = MIC, y = bacteria, color = gram)) + 
+      geom_point() + 
+      geom_vline(xintercept = 0.1) +
+      scale_x_log10()
+
+p + labs(title = "Pencillin's MIC on different bacteria")
 ```
+
+![](c05-antibiotics-assignment_files/figure-gfm/q1.3-1.png)<!-- -->
 
 #### Visual 4 (Some variables)
 
@@ -193,7 +228,17 @@ your other visuals.
 
 ``` r
 # WRITE YOUR CODE HERE
+p <- df_formatted %>%
+    filter(antibiotic == 'streptomycin') %>%
+    ggplot(aes(x = MIC, y = bacteria, color = gram)) + 
+      geom_point() + 
+      geom_vline(xintercept = 0.1) +
+      scale_x_log10()
+
+p + labs(title = "Streptomycin's MIC on different bacteria")
 ```
+
+![](c05-antibiotics-assignment_files/figure-gfm/q1.4-1.png)<!-- -->
 
 #### Visual 5 (Some variables)
 
@@ -205,8 +250,17 @@ Note that your visual must be *qualitatively different* from *all* of
 your other visuals.
 
 ``` r
-# WRITE YOUR CODE HERE
+p <- df_formatted %>%
+    filter(antibiotic == 'neomycin') %>%
+    ggplot(aes(x = MIC, y = bacteria, color = gram)) + 
+      geom_point() + 
+      geom_vline(xintercept = 0.1) +
+      scale_x_log10()
+
+p + labs(title = "Neomycin's MIC on different bacteria")
 ```
+
+![](c05-antibiotics-assignment_files/figure-gfm/q1.5-1.png)<!-- -->
 
 ### **q2** Assess your visuals
 
@@ -227,10 +281,31 @@ opportunity to think about why this is.**
 > How do the three antibiotics vary in their effectiveness against
 > bacteria of different genera and Gram stain?
 
-*Observations* - What is your response to the question above? - (Write
-your response here) - Which of your visuals above (1 through 5) is
-**most effective** at helping to answer this question? - (Write your
-response here) - Why? - (Write your response here)
+*Observations*
+
+- What is your response to the question above?
+
+  - Neomycin is more effective for negative gram bacteria strains since
+    for 5 bacteria strains, the MIC value is lower than the 0.1
+    threshold for effectiveness.
+
+  - Penicillin is not effective for gram negative bacteria as it yielded
+    high MIC values
+
+  - For the Streptococcus genera, penicillin is the most effective
+
+  - For the Staphylococcus genera, neomycin is the most effective, but
+    penicillin and streptomycin are also effective.
+
+- Which of your visuals above (1 through 5) is **most effective** at
+  helping to answer this question?
+
+  - Visual 1
+
+- Why?
+
+  - Visual 1 gives a comprehensive overview of all the variables and
+    shows the effective threshold of 0.1 MIC value.
 
 #### Guiding Question 2
 
@@ -241,10 +316,25 @@ and in 1984 *Streptococcus fecalis* was renamed *Enterococcus fecalis*
 > Why was *Diplococcus pneumoniae* was renamed *Streptococcus
 > pneumoniae*?
 
-*Observations* - What is your response to the question above? - (Write
-your response here) - Which of your visuals above (1 through 5) is
-**most effective** at helping to answer this question? - (Write your
-response here) - Why? - (Write your response here)
+*Observations*
+
+- What is your response to the question above?
+
+  - Looking at the three antibodies effect on *Diplococcus pneumoniae,*
+    it is very similar to its effect on the bacteria in the
+    streptococcus family. These bacteria are all also gram positive.
+    This may explain why this bacteria has been renamed.
+
+- Which of your visuals above (1 through 5) is **most effective** at
+  helping to answer this question?
+
+  - Visual 1
+
+- Why?
+
+  - Visual 1 shows all three drugs’ effect on the bacteria *Diplococcus
+    pneumoniae.* It also shows the effects of the drugs on the other
+    bacteria so comparisons can be made relatively easily.
 
 # References
 
