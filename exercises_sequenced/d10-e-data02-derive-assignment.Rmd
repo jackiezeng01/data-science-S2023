@@ -91,7 +91,7 @@ diamonds %>%
 ### Vectorized Functions
 
 | Type            | Functions                                                                            |
-|----------------|--------------------------------------------------------|
+|-----------------|--------------------------------------------------------------------------------------|
 | Arithmetic ops. | `+, -, *, /, ^`                                                                      |
 | Modular arith.  | `%/%, %%`                                                                            |
 | Logical comp.   | `<, <=, >, >=, !=, ==`                                                               |
@@ -140,7 +140,7 @@ df_q4
 **Observations**
 
 -   Comment on the relative values of `cov_depth` and `cov_diff`.
-    -   `cov_depth` is tiny; there\'s not much variation in the depth,
+    -   `cov_depth` is tiny; there's not much variation in the depth,
         compared to its scale.
 -   Why is `cov_diff` so large?
     -   `cov_diff` is enormous! This is because the mean difference
