@@ -334,7 +334,12 @@ df_q8 <-
 	"geographic_area_name" = "Geographic Area Name",
 	"income_estimate" = "Estimate",
 	"income_moe" =  "Margin of Error"
-  ) 
+  ) %>% 
+  drop_na(category, income_estimate) %>% 
+  mutate(income_SE = income_moe/1.645) %>% 
+  mutate(income_lo = income_estimate - income_SE*2.576) %>% # Multiplied by the z value
+  mutate(income_hi = income_estimate + income_SE*2.576) %>% 
+  mutate(income_CV = income_SE/income_estimate)
 
 df_q8$category <- gsub("^.{0,12}", "", df_q8$category)
 
@@ -355,6 +360,26 @@ df_q8 %>%
   geom_boxplot() + 
   # scale_x_discrete(guide = guide_axis(angle = 90))
   coord_flip()
+```
+
+```{r}
+# Find outliers
+out <- boxplot.stats(df_q8$income_estimate)$out
+out_ind <- which(df_q8$income_estimate %in% c(out))
+df_outliers <- (df_q8[out_ind, ])
+df_outliers
+```
+
+```{r}
+df_outliers %>% 
+  group_by(category) %>%
+  summarize(
+    n=n(),
+    MeanVelocity = mean(Velocity)
+  )
+  stat="count" %>% 
+  ggplot(aes(category)) +
+  geom_histogram()
 ```
 
 **Observations**:
